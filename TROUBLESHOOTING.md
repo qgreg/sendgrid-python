@@ -35,22 +35,49 @@ In the first case SENDGRID_API_KEY is in reference to the name of the environmen
 To read the error message returned by SendGrid's API in Python 2.X:
 
 ```python
-import urllib2
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
+from python_http_client import exceptions
 
+sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
+from_email = Email("dx@sendgrid.com")
+to_email = Email("elmer.thomas@sendgrid.com")
+subject = "Sending with SendGrid is Fun"
+content = Content("text/plain", "and easy to do anywhere, even with Python")
+mail = Mail(from_email, subject, to_email, content)
 try:
-  response = sg.client.mail.send.post(request_body=mail.get())
-except urllib2.HTTPError as e:
-    print e.read()
+    response = sg.client.mail.send.post(request_body=mail.get())
+except exceptions.BadRequestsError as e:
+    print e.body
+    exit()
+print response.status_code
+print response.body
+print response.headers
 ```
 
 To read the error message returned by SendGrid's API in Python 3.X:
 
 ```python
-import urllib
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
+from python_http_client import exceptions
+
+sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
+from_email = Email("dx@sendgrid.com")
+to_email = Email("elmer.thomas@sendgrid.com")
+subject = "Sending with SendGrid is Fun"
+content = Content("text/plain", "and easy to do anywhere, even with Python")
+mail = Mail(from_email, subject, to_email, content)
 try:
-  response = sg.client.mail.send.post(request_body=mail.get())
-except urllib.error.HTTPError as e:
-    print e.read()
+    response = sg.client.mail.send.post(request_body=mail.get())
+except exceptions.BadRequestsError as e:
+    print(e.body)
+    exit()
+print(response.status_code)
+print(response.body)
+print(response.headers)
 ```
 
 <a name="migrating"></a>
